@@ -11,10 +11,10 @@ wiki_file = 'test_repo.wiki/wiki-update.md'
 if not os.path.exists(wiki_file):
     with open(wiki_file, 'w') as file:
         file.write("## Workflow Log\n\n")
-        file.write("| User ID | Date | Numer ID | GitHub Actor |\n")
+        file.write("| Date | GitHub Actor | Numer ID | User ID |\n")
         file.write("| --- | --- | --- | --- |\n")
 
 # Dodawanie nowego wpisu
 with open(wiki_file, 'a') as file:
-    file.write(f"| {user_id} | {current_date} | {numer_id} | {github_actor} |\n")
+    file.write(f"| {current_date} | {github_actor} | {numer_id} | {user_id} |\n")
 
