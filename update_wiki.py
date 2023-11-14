@@ -1,8 +1,9 @@
 import os
 
 user_id = os.environ['USER_ID']
-current_date = os.environ['CURRENT_DATE']
+current_date = os.environ.get('CURRENT_DATE')  # Zmieniono na os.environ.get dla lepszej obsługi błędów
 numer_id = os.environ['NUMER_ID']
+github_actor = os.environ['GITHUB_ACTOR']  # Użytkownik, który uruchomił workflow
 
 wiki_file = 'test_repo.wiki/wiki-update.md'
 
@@ -10,9 +11,10 @@ wiki_file = 'test_repo.wiki/wiki-update.md'
 if not os.path.exists(wiki_file):
     with open(wiki_file, 'w') as file:
         file.write("## Workflow Log\n\n")
-        file.write("| User ID | Date | Numer ID |\n")
-        file.write("| --- | --- | --- |\n")
+        file.write("| User ID | Date | Numer ID | GitHub Actor |\n")
+        file.write("| --- | --- | --- | --- |\n")
 
 # Dodawanie nowego wpisu
 with open(wiki_file, 'a') as file:
-    file.write(f"| {user_id} | {current_date} | {numer_id} |\n")
+    file.write(f"| {user_id} | {current_date} | {numer_id} | {github_actor} |\n")
+
