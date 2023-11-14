@@ -36,9 +36,15 @@ jobs:
         env:
           USER_ID: ${{ github.event.inputs.user_id }}
           NUMER_ID: ${{ github.event.inputs.numer_id }}
-          CURRENT_DATE: $(date +'%Y-%m-%d %H:%M:%S')
+          CURRENT_DATE: ${{ steps.current-date.outputs.date }}
         run: |
           python update_wiki.py
+        id: update-wiki
+
+      - name: Set Current Date
+        id: current-date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M:%S')"
+
 
       - name: Commit and Push Changes to Wiki
         run: |
