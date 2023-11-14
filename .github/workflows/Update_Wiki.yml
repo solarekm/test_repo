@@ -1,0 +1,43 @@
+name: Update Wiki on Demand
+
+on:
+  workflow_dispatch:
+    inputs:
+      user_id:
+        type: string
+        description: 'Enter the User ID'
+        required: true
+      numer_id:
+        type: string
+        description: 'Enter the Numer ID'
+        required: true
+
+jobs:
+  update-wiki:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Update Wiki
+        env:
+          USER_ID: ${{ github.event.inputs.user_id }}
+          NUMER_ID: ${{ github.event.inputs.numer_id }}
+          CURRENT_DATE: $(date +'%Y-%m-%d %H:%M:%S')
+        run: |
+          python update_wiki.py
+
+      - name: Commit and Push
+        uses: cpina/github-action-push-to-another-repository@master
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN }}
+        with:
+          source-directory: '.'
+          destination-github-username: ${{ github.actor }}
+          destination-repository-name: 'test_repo.wiki'
+          user-email: michal.solarek@outlook.com
