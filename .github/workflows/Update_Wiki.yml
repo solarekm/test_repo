@@ -24,10 +24,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Set Current Date
-        id: current-date
-        run: echo "CURRENT_DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
-
       - name: Clone Wiki Repository
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN }}
@@ -36,15 +32,22 @@ jobs:
           git config --global user.name "Michal Solarek"
           git clone https://x-access-token:$API_TOKEN_GITHUB@github.com/solarekm/test_repo.wiki.git
 
+      - name: Get Current Date
+        id: current-date
+        run: echo "CURRENT_DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
       - name: Update Wiki File
         env:
           USER_ID: ${{ github.event.inputs.user_id }}
           NUMER_ID: ${{ github.event.inputs.numer_id }}
-          CURRENT_DATE: ${{ env.CURRENT_DATE }}
-          GITHUB_ACTOR: ${{ github.actor }}
         run: |
-          python update_wiki.py
-        id: update-wiki
+          NEW_ENTRY="| ${{ github.event.inputs.user_id }} | $CURRENT_DATE | ${{ github.event.inputs.numer_id }} | ${{ github.actor }} |"
+          WIKI_FILE="test_repo.wiki/wiki-update.md"
+          if [[ ! -f "$WIKI_FILE" ]]; then
+            echo -e "## Workflow Log\n\n" > "$WIKI_FILE"
+            echo -e "| User ID | Date | Numer ID | GitHub Actor |\n| --- | --- | --- | --- |\n" >> "$WIKI_FILE"
+          fi
+          sed -i "3i$NEW_ENTRY" "$WIKI_FILE"      
 
       - name: Commit and Push Changes to Wiki
         run: |
