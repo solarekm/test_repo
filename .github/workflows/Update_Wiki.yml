@@ -24,7 +24,15 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Update Wiki
+      - name: Clone Wiki Repository
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN }}
+        run: |
+          git config --global user.email "michal.solarek@outlook.com"
+          git config --global user.name "Michal Solarek"
+          git clone https://x-access-token:$API_TOKEN_GITHUB@github.com/solarekm/test_repo.wiki.git
+
+      - name: Update Wiki File
         env:
           USER_ID: ${{ github.event.inputs.user_id }}
           NUMER_ID: ${{ github.event.inputs.numer_id }}
@@ -32,12 +40,9 @@ jobs:
         run: |
           python update_wiki.py
 
-      - name: Commit and Push
-        uses: cpina/github-action-push-to-another-repository@master
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN }}
-        with:
-          source-directory: '.'
-          destination-github-username: ${{ github.actor }}
-          destination-repository-name: 'test_repo.wiki'
-          user-email: michal.solarek@outlook.com
+      - name: Commit and Push Changes to Wiki
+        run: |
+          cd test_repo.wiki
+          git add .
+          git commit -m "Update Wiki"
+          git push
