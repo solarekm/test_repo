@@ -3,9 +3,9 @@ name: Update Wiki on Demand
 on:
   workflow_dispatch:
     inputs:
-      user_id:
+      crq_id:
         type: string
-        description: 'Enter the User ID'
+        description: 'Enter the CRQ ID'
         required: true
       numer_id:
         type: string
@@ -38,16 +38,22 @@ jobs:
 
       - name: Update Wiki File
         env:
-          USER_ID: ${{ github.event.inputs.user_id }}
+          numer_crq: ${{ github.event.inputs.crq_id }}
           NUMER_ID: ${{ github.event.inputs.numer_id }}
+          uzytkwnik: ${{ github.actor }}
         run: |
-          NEW_ENTRY="| ${{ github.event.inputs.user_id }} | $CURRENT_DATE | ${{ github.event.inputs.numer_id }} | ${{ github.actor }} |"
-          WIKI_FILE="test_repo.wiki/wiki-update.md"
-          if [[ ! -f "$WIKI_FILE" ]]; then
-            echo -e "## Workflow Log\n\n" > "$WIKI_FILE"
-            echo -e "| User ID | Date | Numer ID | GitHub Actor |\n| --- | --- | --- | --- |\n" >> "$WIKI_FILE"
+          # Nazwa pliku Markdown
+          FILE="Home.md"
+
+          # Sprawdzenie, czy plik istnieje
+          if [ ! -f "$FILE" ]; then
+              # Tworzenie nagłówków tabeli, jeśli plik nie istnieje
+              echo "| Data | Użytkownik | Aktualny obraz | Poprzedni obraz | Numer CRQ | Komentarz |" > $FILE
+              echo "|------|------------|----------------|----------------|-----------|-----------|" >> $FILE
           fi
-          sed -i "3i$NEW_ENTRY" "$WIKI_FILE"      
+
+          # Zapisanie nowego wiersza pod nagłówkami
+          sed -i "3i| $CURRENT_DATE | $uzytkownik | $aktualny_obraz | $poprzedni_obraz | $numer_crq | $komentarz |" $FILE
 
       - name: Commit and Push Changes to Wiki
         run: |
