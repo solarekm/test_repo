@@ -68,8 +68,8 @@ jobs:
               local current_version="${{ env.CURRENT_VERSION }}"
               local previous_version="${{ env.PREVIOUS_VERSION }}"
 
-              # Znajdź linię zawierającą HUB_STAGE i zaktualizuj wartości
-              sed -i "/^| $hub_stage /{s|[^|]*| $current_version |3; s|[^|]*| $previous_version |5}" $FILE
+              # Komenda sed, która znajdzie linię z hub_stage i zaktualizuje odpowiednie kolumny
+              sed -i "/^| $hub_stage /{s|\([^|]*\)| $current_version |3; s|\([^|]*\)| $previous_version |5}" $FILE
           }
 
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
