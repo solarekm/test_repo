@@ -73,7 +73,7 @@ jobs:
 
               # Komenda sed, która znajdzie linię z hub_stage i zaktualizuje odpowiednie kolumny
               sed "/^| $hub_stage /{s/| [^ |]* | [^ |]* |$/| $current_version | $previous_version |/}" $FILE > "$tmp_file" && mv "$tmp_file" $FILE
-              sed -i "13i| $CURRENT_DATE | ${{ env.HUB_ENV }} | ${{ env.CURRENT_VERSION }} | ${{ env.CRQ }} | ${{ env.USER }} | |" $FILE
+              sed -i "13i| $(date +'%Y-%m-%d %H:%M:%S') | $HUB_ENV | $CURRENT_VERSION | $CRQ | $USER | |" $FILE
           }
 
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
