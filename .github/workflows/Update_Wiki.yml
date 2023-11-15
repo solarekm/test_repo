@@ -78,15 +78,15 @@ jobs:
           update_history() {
               local tmp_file=$(mktemp)
 
-              # Dodaj nowy wiersz bezpośrednio po nagłówku tabeli historii wdrożeń
-              sed "/| DATA | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |/a|------------------|------------------|------------------|------------------|------------------|------------------|/a| $(date +'%Y-%m-%d %H:%M:%S') | $HUB_ENV | $CURRENT_VERSION | $CRQ | $USER | |" $FILE > "$tmp_file" && mv "$tmp_file" $FILE
+              # Dodaj nowy wiersz bezpośrednio po linii separatora tabeli
+              sed "/|------|---------|---------|-----|------|---------|/a| $(date +'%Y-%m-%d %H:%M:%S') | $HUB_ENV | $CURRENT_VERSION | $CRQ | $USER | |" $FILE > "$tmp_file" && mv "$tmp_file" $FILE
           }
 
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
           if [ ! -f "$FILE" ]; then
               echo "## Deployed Versions" > $FILE
               echo "| Hub_Stage | Current version | Previous version |" >> $FILE
-              echo "|------------------|------------------|------------------|" >> $FILE
+              echo "|------------|-------------------|--------------------|" >> $FILE
               echo "| EMEA_E2E   | \$current_version | \$previous_version |" >> $FILE
               echo "| EMEA_PROD  | \$current_version | \$previous_version |" >> $FILE
               echo "| US_E2E     | \$current_version | \$previous_version |" >> $FILE
@@ -96,7 +96,7 @@ jobs:
 
               echo "## Deployment History" >> $FILE
               echo "| DATA | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |" >> $FILE
-              echo "|------------------|------------------|------------------|------------------|------------------|------------------|" >> $FILE
+              echo "|------|---------|---------|-----|------|---------|" >> $FILE
           fi
 
           # Zaktualizuj tabelę dla wybranej opcji
