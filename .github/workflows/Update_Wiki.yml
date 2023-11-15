@@ -43,7 +43,7 @@ jobs:
           uzytkwnik: ${{ github.actor }}
         run: |
           # Nazwa pliku Markdown
-          FILE="Home.md"
+          FILE="test_repo.wiki/Home.md"
 
           # Sprawdzenie, czy plik istnieje
           if [ ! -f "$FILE" ]; then
