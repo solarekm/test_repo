@@ -90,11 +90,11 @@ jobs:
               echo "## Deployment History" >> $FILE
               echo "| DATA | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |" >> $FILE
               echo "|------------------|------------------|------------------|------------------|------------------|------------------|" >> $FILE
-              echo "| $CURRENT_DATE | ${{ env.HUB_ENV }} | ${{ env.CURRENT_VERSION }} | ${{ env.CRQ }} | ${{ env.USER }} | |" >> $FILE
           fi
 
           # Zaktualizuj tabelę dla wybranej opcji
           update_table "$hub_stage" "$current_version" "$previous_version"
+          sed -i "13i| $CURRENT_DATE | ${{ env.HUB_ENV }} | ${{ env.CURRENT_VERSION }} | ${{ env.CRQ }} | ${{ env.USER }} | |" $FILE
           
       - name: Commit and Push Changes to Wiki
         run: |
