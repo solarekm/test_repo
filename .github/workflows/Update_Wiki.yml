@@ -63,26 +63,18 @@ jobs:
         run: |
           # Nazwa pliku Markdown
           FILE="test_repo.wiki/Home.md"
-          
+
           # Funkcja do dodawania danych do tabeli dla wybranego HUB_STAGE
           update_table() {
               local hub_stage="${{ env.HUB_ENV }}"
               local current_version="${{ env.CURRENT_VERSION }}"
               local previous_version="${{ env.PREVIOUS_VERSION }}"
               local tmp_file=$(mktemp)
-          
+
               # Komenda sed, która znajdzie linię z hub_stage i zaktualizuje odpowiednie kolumny
               sed "/^| $hub_stage /{s/| [^ |]* | [^ |]* |$/| $current_version | $previous_version |/}" $FILE > "$tmp_file" && mv "$tmp_file" $FILE
           }
-          
-          # Funkcja do dodawania wpisu do historii wdrożeń
-          add_deployment_entry() {
-              local tmp_file=$(mktemp)
-          
-              # Dodanie nowego wpisu bezpośrednio pod nagłówkami tabeli
-              awk -v date="$CURRENT_DATE" -v hub_env="${{ env.HUB_ENV }}" -v tag_sha="${{ env.CURRENT_VERSION }}" -v crq="${{ env.CRQ }}" -v user="${{ env.USER }}" '/^| DATA | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |/{print;print "| " date " | " hub_env " | " tag_sha " | " crq " | " user " | |";next}1' $FILE > "$tmp_file" && mv "$tmp_file" $FILE
-          }
-          
+
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
           if [ ! -f "$FILE" ]; then
               echo "## Deployed Versions" > $FILE
@@ -94,17 +86,15 @@ jobs:
               echo "| US_PROD    | \$current_version | \$previous_version |" >> $FILE
               echo "| CN_E2E     | \$current_version | \$previous_version |" >> $FILE
               echo "| CN_PROD    | \$current_version | \$previous_version |" >> $FILE
-          
+
               echo "## Deployment History" >> $FILE
               echo "| DATA | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |" >> $FILE
               echo "|------------------|------------------|------------------|------------------|------------------|------------------|" >> $FILE
+              echo "| $CURRENT_DATE | ${{ env.HUB_ENV }} | ${{ env.CURRENT_VERSION }} | ${{ env.CRQ }} | ${{ env.USER }} | |" >> $FILE
           fi
-          
+
           # Zaktualizuj tabelę dla wybranej opcji
           update_table "$hub_stage" "$current_version" "$previous_version"
-          
-          # Dodaj wpis do historii wdrożeń
-          add_deployment_entry        
           
       - name: Commit and Push Changes to Wiki
         run: |
