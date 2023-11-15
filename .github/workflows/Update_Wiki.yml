@@ -94,6 +94,7 @@ jobs:
 
           # Zaktualizuj tabelę dla wybranej opcji
           update_table "$hub_stage" "$current_version" "$previous_version"
+          wc -l $FILE
           sed -i "13i| $CURRENT_DATE | ${{ env.HUB_ENV }} | ${{ env.CURRENT_VERSION }} | ${{ env.CRQ }} | ${{ env.USER }} | |" $FILE
           
       - name: Commit and Push Changes to Wiki
