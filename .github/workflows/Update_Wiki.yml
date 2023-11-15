@@ -68,9 +68,8 @@ jobs:
               local current_version="${{ env.CURRENT_VERSION }}"
               local previous_version="${{ env.PREVIOUS_VERSION }}"
 
-              # Dodajemy dane do pliku, używając sed do znalezienia odpowiedniego miejsca
-              # Uwaga: tutaj zakładamy, że plik istnieje i ma już odpowiednie nagłówki oraz stałe wartości HUB_STAGE
-              sed -i "/^| $hub_stage /{s|Current version[^|]*|Current version |;s|Previous version[^|]*|Previous version |;s|\$current_version|$current_version|;s|\$previous_version|$previous_version|}" $FILE
+              # Znajdź linię zawierającą HUB_STAGE i zaktualizuj wartości
+              sed -i "/^| $hub_stage /{s|[^|]*| $current_version |3; s|[^|]*| $previous_version |5}" $FILE
           }
 
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
@@ -78,12 +77,12 @@ jobs:
               echo "## Deployed Versions:" > $FILE
               echo "| Hub_Stage | Current version | Previous version |" >> $FILE
               echo "|------------|-----------------|------------------|" >> $FILE
-              echo "| EMEA_E2E   | \$current_version | \$previous_version |" >> $FILE
-              echo "| EMEA_PROD  | \$current_version | \$previous_version |" >> $FILE
-              echo "| US_E2E     | \$current_version | \$previous_version |" >> $FILE
-              echo "| US_PROD    | \$current_version | \$previous_version |" >> $FILE
-              echo "| CN_E2E     | \$current_version | \$previous_version |" >> $FILE
-              echo "| CN_PROD    | \$current_version | \$previous_version |" >> $FILE
+              echo "| EMEA_E2E   |  |  |" >> $FILE
+              echo "| EMEA_PROD  |  |  |" >> $FILE
+              echo "| US_E2E     |  |  |" >> $FILE
+              echo "| US_PROD    |  |  |" >> $FILE
+              echo "| CN_E2E     |  |  |" >> $FILE
+              echo "| CN_PROD    |  |  |" >> $FILE
           fi
 
           # Zaktualizuj tabelę dla wybranej opcji
