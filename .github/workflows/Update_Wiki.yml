@@ -73,7 +73,13 @@ jobs:
 
               # Komenda sed, która znajdzie linię z hub_stage i zaktualizuje odpowiednie kolumny
               sed "/^| $hub_stage /{s/| [^ |]* | [^ |]* |$/| $current_version | $previous_version |/}" $FILE > "$tmp_file" && mv "$tmp_file" $FILE
-              sed -i "13i| $(date +'%Y-%m-%d %H:%M:%S') | $HUB_ENV | $CURRENT_VERSION | $CRQ | $USER | |" $FILE
+          }
+          # Funkcja do dodawania danych do historii wdrożeń
+          update_history() {
+              local tmp_file=$(mktemp)
+
+              # Dodaj nowy wiersz bezpośrednio po nagłówku tabeli historii wdrożeń
+              sed "/| DATA | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |/a| $(date +'%Y-%m-%d %H:%M:%S') | $HUB_ENV | $CURRENT_VERSION | $CRQ | $USER | |" $FILE > "$tmp_file" && mv "$tmp_file" $FILE
           }
 
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
@@ -95,6 +101,8 @@ jobs:
 
           # Zaktualizuj tabelę dla wybranej opcji
           update_table "$hub_stage" "$current_version" "$previous_version"
+          # Zaktualizuj historię wdrożeń
+          update_history
           
       - name: Commit and Push Changes to Wiki
         run: |
