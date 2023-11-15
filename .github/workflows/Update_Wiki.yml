@@ -77,12 +77,12 @@ jobs:
               echo "## Deployed Versions:" > $FILE
               echo "| Hub_Stage | Current version | Previous version |" >> $FILE
               echo "|------------|-----------------|------------------|" >> $FILE
-              echo "| EMEA_E2E   |  |  |" >> $FILE
-              echo "| EMEA_PROD  |  |  |" >> $FILE
-              echo "| US_E2E     |  |  |" >> $FILE
-              echo "| US_PROD    |  |  |" >> $FILE
-              echo "| CN_E2E     |  |  |" >> $FILE
-              echo "| CN_PROD    |  |  |" >> $FILE
+              echo "| EMEA_E2E   |                 |                  |" >> $FILE
+              echo "| EMEA_PROD  |                 |                  |" >> $FILE
+              echo "| US_E2E     |                 |                  |" >> $FILE
+              echo "| US_PROD    |                 |                  |" >> $FILE
+              echo "| CN_E2E     |                 |                  |" >> $FILE
+              echo "| CN_PROD    |                 |                  |" >> $FILE
           fi
 
           # Zaktualizuj tabelę dla wybranej opcji
