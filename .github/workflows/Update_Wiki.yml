@@ -79,7 +79,7 @@ jobs:
               local tmp_file=$(mktemp)
 
               # Dodaj nowy wiersz bezpośrednio po nagłówku tabeli historii wdrożeń
-              sed "/| DATA | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |/a| $(date +'%Y-%m-%d %H:%M:%S') | $HUB_ENV | $CURRENT_VERSION | $CRQ | $USER | |" $FILE > "$tmp_file" && mv "$tmp_file" $FILE
+              sed "/| DATA | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |/a|------------------|------------------|------------------|------------------|------------------|------------------|/a| $(date +'%Y-%m-%d %H:%M:%S') | $HUB_ENV | $CURRENT_VERSION | $CRQ | $USER | |" $FILE > "$tmp_file" && mv "$tmp_file" $FILE
           }
 
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
