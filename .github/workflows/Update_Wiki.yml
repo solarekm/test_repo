@@ -75,7 +75,7 @@ jobs:
 
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
           if [ ! -f "$FILE" ]; then
-              echo "## Deployed Versions:" > $FILE
+              echo "## Deployed Versions" > $FILE
               echo "| Hub_Stage | Current version | Previous version |" >> $FILE
               echo "|------------|-----------------|------------------|" >> $FILE
               echo "| EMEA_E2E   | \$current_version | \$previous_version |" >> $FILE
