@@ -67,9 +67,10 @@ jobs:
               local hub_stage="${{ env.HUB_ENV }}"
               local current_version="${{ env.CURRENT_VERSION }}"
               local previous_version="${{ env.PREVIOUS_VERSION }}"
+              local tmp_file=$(mktemp)
 
               # Komenda sed, która znajdzie linię z hub_stage i zaktualizuje odpowiednie kolumny
-              sed -i "/^| $hub_stage /{s|\([^|]*\)| $current_version |3; s|\([^|]*\)| $previous_version |5}" $FILE
+              sed "/^| $hub_stage /{s/| [^ |]* | [^ |]* |$/| $current_version | $previous_version |/}" $FILE > "$tmp_file" && mv "$tmp_file" $FILE
           }
 
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
@@ -77,12 +78,12 @@ jobs:
               echo "## Deployed Versions:" > $FILE
               echo "| Hub_Stage | Current version | Previous version |" >> $FILE
               echo "|------------|-----------------|------------------|" >> $FILE
-              echo "| EMEA_E2E   |                 |                  |" >> $FILE
-              echo "| EMEA_PROD  |                 |                  |" >> $FILE
-              echo "| US_E2E     |                 |                  |" >> $FILE
-              echo "| US_PROD    |                 |                  |" >> $FILE
-              echo "| CN_E2E     |                 |                  |" >> $FILE
-              echo "| CN_PROD    |                 |                  |" >> $FILE
+              echo "| EMEA_E2E   | \$current_version | \$previous_version |" >> $FILE
+              echo "| EMEA_PROD  | \$current_version | \$previous_version |" >> $FILE
+              echo "| US_E2E     | \$current_version | \$previous_version |" >> $FILE
+              echo "| US_PROD    | \$current_version | \$previous_version |" >> $FILE
+              echo "| CN_E2E     | \$current_version | \$previous_version |" >> $FILE
+              echo "| CN_PROD    | \$current_version | \$previous_version |" >> $FILE
           fi
 
           # Zaktualizuj tabelę dla wybranej opcji
