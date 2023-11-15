@@ -1,22 +1,45 @@
-name: Update Wiki on Demand
-
+name: Update Wiki
+      
 on:
   workflow_dispatch:
     inputs:
-      crq_id:
-        type: string
-        description: 'Enter the CRQ ID'
+      destinationHubEnv:
+        description: Select destination hubEnv
         required: true
-      numer_id:
+        type: choice
+        options:
+          - 'EMEA_TEST'
+          - 'EMEA_INT'
+          - 'EMEA_E2E'
+          - 'EMEA_PROD'
+          - 'US_E2E'
+          - 'US_PROD'
+          - 'CN_E2E'
+          - 'CN_PROD'
+      currentVersion:
+            type: string
+            description: 'Enter the Current Version'
+            required: true
+      previousVersion:
+              type: string
+              description: 'Enter the Previous Version'
+              required: true
+      crqNumber:
         type: string
-        description: 'Enter the Numer ID'
+        description: 'Enter the CRQ number'
         required: true
 
 jobs:
   update-wiki:
     runs-on: ubuntu-latest
+    env: 
+      API_TOKEN_GITHUB: ${{ secrets.API_TOKEN }}
+      HUB_ENV: ${{github.event.inputs.destinationHubEnv}}
+      CURRENT_VERSION: ${{github.event.inputs.currentVersion}}
+      PREVIOUS_VERSION: ${{github.event.inputs.previousVersion}}
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v2
 
       - name: Setup Python
@@ -25,36 +48,47 @@ jobs:
           python-version: '3.x'
 
       - name: Clone Wiki Repository
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN }}
         run: |
           git config --global user.email "michal.solarek@outlook.com"
           git config --global user.name "Michal Solarek"
-          git clone https://x-access-token:$API_TOKEN_GITHUB@github.com/solarekm/test_repo.wiki.git
+          git clone https://x-access-token:${{ env.API_TOKEN_GITHUB }}@github.com/solarekm/test_repo.wiki.git
 
       - name: Get Current Date
         id: current-date
         run: echo "CURRENT_DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
 
       - name: Update Wiki File
-        env:
-          numer_crq: ${{ github.event.inputs.crq_id }}
-          NUMER_ID: ${{ github.event.inputs.numer_id }}
-          uzytkwnik: ${{ github.actor }}
         run: |
           # Nazwa pliku Markdown
           FILE="test_repo.wiki/Home.md"
 
-          # Sprawdzenie, czy plik istnieje
+          # Funkcja do dodawania danych do tabeli dla wybranego HUB_STAGE
+          update_table() {
+              local hub_stage="${{ env.HUB_ENV }}"
+              local current_version="${{ env.CURRENT_VERSION }}"
+              local previous_version="${{ env.PREVIOUS_VERSION }}"
+
+              # Dodajemy dane do pliku, używając sed do znalezienia odpowiedniego miejsca
+              # Uwaga: tutaj zakładamy, że plik istnieje i ma już odpowiednie nagłówki oraz stałe wartości HUB_STAGE
+              sed -i "/^| $hub_stage /{s|Current version[^|]*|Current version |;s|Previous version[^|]*|Previous version |;s|\$current_version|$current_version|;s|\$previous_version|$previous_version|}" $FILE
+          }
+
+          # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
           if [ ! -f "$FILE" ]; then
-              # Tworzenie nagłówków tabeli, jeśli plik nie istnieje
-              echo "| Data | Użytkownik | Aktualny obraz | Poprzedni obraz | Numer CRQ | Komentarz |" > $FILE
-              echo "|------|------------|----------------|----------------|-----------|-----------|" >> $FILE
+              echo "## Deployed Versions:"
+              echo "| Hub_Stage | Current version | Previous version |" > $FILE
+              echo "|------------|-----------------|------------------|" >> $FILE
+              echo "| EMEA_E2E   | \$current_version | \$previous_version |" >> $FILE
+              echo "| EMEA_PROD  | \$current_version | \$previous_version |" >> $FILE
+              echo "| US_E2E     | \$current_version | \$previous_version |" >> $FILE
+              echo "| US_PROD    | \$current_version | \$previous_version |" >> $FILE
+              echo "| CN_E2E     | \$current_version | \$previous_version |" >> $FILE
+              echo "| CN_PROD    | \$current_version | \$previous_version |" >> $FILE
           fi
 
-          # Zapisanie nowego wiersza pod nagłówkami
-          sed -i "3i| $CURRENT_DATE | $uzytkownik | $aktualny_obraz | $poprzedni_obraz | $numer_crq | $komentarz |" $FILE
-
+          # Zaktualizuj tabelę dla wybranej opcji
+          update_table "$hub_stage" "$current_version" "$previous_version"
+          
       - name: Commit and Push Changes to Wiki
         run: |
           cd test_repo.wiki
