@@ -62,7 +62,7 @@ jobs:
       - name: Update Wiki File
         run: |
           # Nazwa pliku Markdown
-          FILE="test_repo.wiki/Home.md"
+          FILE="test_repo.wiki/Release-Notes.md"
 
           # Funkcja do dodawania danych do tabeli dla wybranego HUB_STAGE
           update_table() {
