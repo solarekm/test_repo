@@ -85,8 +85,8 @@ jobs:
           # Sprawdzenie, czy plik istnieje i inicjalizacja nagłówków, jeśli to konieczne
           if [ ! -f "$FILE" ]; then
               echo "## Deployed Versions" > $FILE
-              echo "| Hub_Stage | Current version | Previous version |" >> $FILE
-              echo "|-----------|-----------------|------------------|" >> $FILE
+              echo "| Hub_Stage | Current version   | Previous version   |" >> $FILE
+              echo "|-----------|-------------------|--------------------|" >> $FILE
               echo "| EMEA_E2E  | \$current_version | \$previous_version |" >> $FILE
               echo "| EMEA_PROD | \$current_version | \$previous_version |" >> $FILE
               echo "| US_E2E    | \$current_version | \$previous_version |" >> $FILE
@@ -95,8 +95,8 @@ jobs:
               echo "| CN_PROD   | \$current_version | \$previous_version |" >> $FILE
 
               echo "## Deployment History" >> $FILE
-              echo "| DATA | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |" >> $FILE
-              echo "|------|---------|---------|-----|------|---------|" >> $FILE
+              echo "| DATA      | HUB_ENV | TAG_SHA | CRQ | USER | COMMENT |" >> $FILE
+              echo "|-----------|---------|---------|-----|------|---------|" >> $FILE
           fi
 
           # Zaktualizuj tabelę dla wybranej opcji
